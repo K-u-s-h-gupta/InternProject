@@ -21,23 +21,15 @@ import BorderColorIcon from "@mui/icons-material/BorderColor";
 
 const Main = () => {
   const [businessData, setBusinessData] = useState([]);
-  const [account, setAccount] = useState({
-    name: "",
-    type: "",
-    contactNo: "",
-    emailId: "",
-  });
 
   useEffect(() => {
     let raw =
-      '{\n    "account": {\n        "name": "string1",\n        "type": "string11",\n        "contactNo": "strin111g",\n        "emailId": "string1111"\n    },\n    "contacts": [\n        {\n            "title": "string",\n            "name": "string",\n            "email": "string",\n            "contactNo": "string",\n            "tgUsername": "string",\n            "designation": "string"\n        }],\n    "variableValues": {\n        "Variable Key 1": "Value 1",\n        "Variable Key 2": "Value 2",\n        "Variable Key 3": "Value 3"\n    },\n    "internName" : "Each applicant is supposed to enter their name here. This will help you test your integration with the Get API documented"\n}';
-
+      '{\n    "account": {\n        "name": "string1",\n        "type": "string11",\n        "contactNo": "strin111g",\n        "emailId": "string1111"\n    },\n    "contacts": [\n        {\n            "title": "string",\n            "name": "string",\n            "email": "string",\n            "contactNo": "string",\n            "tgUsername": "string",\n            "designation": "string"\n        }],\n    "variableValues": {\n        "VariableKey1": "Value 1",\n        "VariableKey2": "Value 2",\n        "VariableKey3": "Value 3",\n   "VariableKey4": "Value 4",\n "VariableKey5": "Value 5"\n   },\n    "internName" : "kush"\n}';
     let config = {
       method: "post",
       url: "https://internship.leadtorev.com/clients/customers/add",
       headers: { "Content-Type": "application/json" },
       data: raw,
-      editObj: { account },
     };
 
     axios(config)
@@ -49,12 +41,22 @@ const Main = () => {
         console.log(error);
       });
   }, []);
-  console.log(businessData);
 
-  function handleAccount(e) {
-    setAccount({
-      [e.target.name]: e.target.value,
-    });
+  function handleSubmit() {
+    let internName = prompt("Enter internName");
+    console.log(internName);
+    let config = {
+      method: "get",
+      url: `https://internship.leadtorev.com//clients/customers/get/by-intern-name?internName=${internName}`,
+      headers: { "Content-Type": "application/json" },
+    };
+    axios(config)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
   return (
     <>
@@ -82,11 +84,16 @@ const Main = () => {
               Add Customer
             </Typography>
             <Box sx={{ m: 1 }}>
-              <Button variant="contained" color="inherit">
+              <Button
+                variant="contained"
+                color="inherit"
+                onClick={handleSubmit}
+              >
                 Add Customer
               </Button>
             </Box>
           </Box>
+
           {businessData.map((item) => (
             <Box sx={{ mt: 3 }}>
               {/* Business Account Details */}
@@ -112,29 +119,25 @@ const Main = () => {
                 </Box>
                 <Box sx={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
                   <TextField
-                    label="Account Name"
                     id="accountName"
                     name="name"
                     value={item.account.name}
-                    onChange={(e) => handleAccount(e)}
                     sx={{ width: "440px", background: "white" }}
                   />
                   <TextField
-                    label="Account Type"
                     id="accountType"
                     name="type"
-                    value={account.type}
-                    onChange={(e) => handleAccount(e)}
+                    value={item.account.type}
                     sx={{ width: "440px", background: "white" }}
                   />
                   <TextField
-                    label="Contact Number"
                     id="contactNumber"
+                    value={item.account.contactNo}
                     sx={{ width: "440px", background: "white" }}
                   />
                   <TextField
-                    label="Email ID"
                     id="emailID"
+                    value={item.account.emailId}
                     sx={{ width: "440px", background: "white" }}
                   />
                 </Box>
@@ -189,7 +192,10 @@ const Main = () => {
                         }}
                         sx={{ background: "white" }}
                       />
-                      <TextField label="value 1" sx={{ background: "white" }} />
+                      <TextField
+                        value={item.variableValues.VariableKey1}
+                        sx={{ background: "white" }}
+                      />
                     </div>
                     <div
                       style={{
@@ -206,7 +212,10 @@ const Main = () => {
                         }}
                         sx={{ background: "white" }}
                       />
-                      <TextField label="value 2" sx={{ background: "white" }} />
+                      <TextField
+                        value={item.variableValues.VariableKey2}
+                        sx={{ background: "white" }}
+                      />
                     </div>
                     <div
                       style={{
@@ -223,7 +232,10 @@ const Main = () => {
                         }}
                         sx={{ background: "white" }}
                       />
-                      <TextField label="value 3" sx={{ background: "white" }} />
+                      <TextField
+                        value={item.variableValues.VariableKey3}
+                        sx={{ background: "white" }}
+                      />
                     </div>
                     <div
                       style={{
@@ -240,7 +252,10 @@ const Main = () => {
                         }}
                         sx={{ background: "white" }}
                       />
-                      <TextField label="value 4" sx={{ background: "white" }} />
+                      <TextField
+                        value={item.variableValues.VariableKey4}
+                        sx={{ background: "white" }}
+                      />
                     </div>
                     <div
                       style={{
@@ -257,7 +272,10 @@ const Main = () => {
                         }}
                         sx={{ background: "white" }}
                       />
-                      <TextField label="value 5" sx={{ background: "white" }} />
+                      <TextField
+                        value={item.variableValues.VariableKey5}
+                        sx={{ background: "white" }}
+                      />
                     </div>
                   </Box>
                 </Paper>
@@ -315,32 +333,32 @@ const Main = () => {
                           <TableRow>
                             <TableCell>Title</TableCell>
                             <TableCell sx={{ fontWeight: "bold" }}>
-                              Title
+                              {item.contacts[0].title}
                             </TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>Name</TableCell>
                             <TableCell sx={{ fontWeight: "bold" }}>
-                              Name
+                              {item.contacts[0].name}
                             </TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>Phone Number</TableCell>
                             <TableCell sx={{ fontWeight: "bold" }}>
-                              Phone Number
+                              {item.contacts[0].contactNo}
                             </TableCell>
                             .
                           </TableRow>
                           <TableRow>
                             <TableCell>Email</TableCell>
                             <TableCell sx={{ fontWeight: "bold" }}>
-                              Email
+                              {item.contacts[0].email}
                             </TableCell>
                           </TableRow>
                           <TableRow>
                             <TableCell>Designation</TableCell>
                             <TableCell sx={{ fontWeight: "bold" }}>
-                              Designation
+                              {item.contacts[0].tgUsername}
                             </TableCell>
                           </TableRow>
                           <TableRow>
