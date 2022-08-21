@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
-
+import React from "react";
+import Sidebar from "./Components/Sidebar";
+import Top from "./Components/Top";
+import Main from "./Components/Main";
+import { Box, AppBar, Toolbar, CssBaseline } from "@mui/material";
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
+    <div>
+      <Box sx={{ display: "flex" }}>
+        <CssBaseline />
+        <AppBar
+          position="fixed"
+          color="inherit"
+          elevation={0}
+          sx={{
+            background: "#F7F7F7 0% 0% no-repeat padding-box",
+            // width: "80.5%",
+          }}
         >
-          Learn React
-        </a>
-      </header>
+          <Toolbar>
+            <Top />
+          </Toolbar>
+        </AppBar>
+
+        {/* drawer */}
+        <Box>
+          <Sidebar />
+        </Box>
+
+        {/* main content */}
+        <Main />
+      </Box>
     </div>
   );
 }
