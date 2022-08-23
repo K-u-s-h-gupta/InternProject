@@ -23,24 +23,30 @@ import CalculateIcon from "@mui/icons-material/Calculate";
 import ContactMailIcon from "@mui/icons-material/ContactMail";
 import PersonAddAlt1Icon from "@mui/icons-material/PersonAddAlt1";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
-import swal from "sweetalert";
+import AddNewContact from "./AddNewContact";
+import AddNewVariable from "./AddNewVariable";
 export default function Main() {
   const [businessData, setBusinessData] = useState([]);
   const [isDisabled, setIsDisabled] = useState(true);
   const [open, setOpen] = useState(false);
+  const [open1, setOpen1] = useState(false);
+  const [open2, setOpen2] = useState(false);
+
   const [account, setAccount] = useState({
     name: "",
     type: "",
     contactNo: "",
     emailId: "",
   });
-  const [variableValues, setVariableValues] = useState({
-    VariableKey1: "Value 1",
-    VariableKey2: "Value 2",
-    VariableKey3: "Value 3",
-    VariableKey4: "Value 4",
-    VariableKey5: "Value 5",
-  });
+  const [variableValue, setVariableValue] = useState("");
+  const [variableKey, setVariableKey] = useState("");
+  const [variableValues, setVariableValues] = useState({});
+  const [fetchVariableValues, setFetchVariableValues] = useState([]);
+  const [fetchVariableValues1, setFetchVariableValues1] = useState({});
+  // console.log(
+  //   Object.keys(fetchVariableValues1).map((item) => fetchVariableValues1[item])
+  // );
+
   const [contacts, setContacts] = useState([
     {
       title: "Mr",
@@ -54,14 +60,41 @@ export default function Main() {
   function handleContactSubmit() {
     setOpen(false);
   }
+  function handleContactCreate() {
+    setOpen1(false);
+  }
+  function handleCreateCancel() {
+    setContacts((prevItems) => prevItems.map((item) => []));
+    setOpen1(false);
+  }
   function handleClose() {
     setOpen(false);
   }
   const handleClickOpen = () => {
     setOpen(true);
   };
+
+  function handleVariableValue(e) {
+    setVariableValue(e.target.value);
+  }
+  function handleVariableKey(e) {
+    setVariableKey(e.target.value);
+  }
+
+  function handleAddNewVariable() {
+    setVariableValues({ ...variableValues, [variableKey]: variableValue });
+    setOpen2(false);
+  }
+  console.log(fetchVariableValues);
+  useEffect(() => {
+    setFetchVariableValues([{ ...variableValues }]);
+  }, [variableValues]);
+  useEffect(() => {
+    setFetchVariableValues1({ ...fetchVariableValues[0] });
+  }, [fetchVariableValues]);
+
   function handleSubmit() {
-    let raw = `{\n    "account": {\n        "name": "string1",\n        "type": "string11",\n        "contactNo": "strin111g",\n        "emailId": "string1111"\n    },\n    "contacts": [\n        {\n            "title": "string",\n            "name": "string",\n            "email": "string",\n            "contactNo": "string",\n            "tgUsername": "string",\n            "designation": "string"\n        }],\n    "variableValues": {\n        "VariableKey1": "Value 1",\n        "VariableKey2": "Value 2",\n        "VariableKey3": "Value 3",\n   "VariableKey4": "Value 4",\n "VariableKey5": "Value 5"\n   },\n    "internName" : "kush"\n}`;
+    let raw = `{\n    "account": {\n        "name": "string1",\n        "type": "string11",\n        "contactNo": "strin111g",\n        "emailId": "string1111"\n    },\n    "contacts": [\n        {\n            "title": "string",\n            "name": "string",\n            "email": "string",\n            "contactNo": "string",\n            "tgUsername": "string",\n            "designation": "string"\n        }],\n    "variableValues":[\n  {\n        "VariableKey1": "Value 1",\n        "VariableKey2": "Value 2",\n        "VariableKey3": "Value 3",\n   "VariableKey4": "Value 4",\n "VariableKey5": "Value 5"\n   }],\n    "internName" : "kush"\n}`;
 
     axios
       .post("https://internship.leadtorev.com/clients/customers/add", {
@@ -80,9 +113,6 @@ export default function Main() {
         console.log(error);
       });
   }
-  function handleVariable() {
-    setIsDisabled((disable) => !disable);
-  }
 
   function handleAccount(e) {
     setAccount({
@@ -94,10 +124,6 @@ export default function Main() {
       [e.target.name]: e.target.value,
     });
   }
-
-  // function handleContacts(e) {
-  //   setContacts((items) => [{ ...items, [e.target.name]: e.target.value }]);
-  // }
   const handleContacts = (index) => (e) => {
     const newArr = contacts.map((item, i) => {
       if (index === i) {
@@ -256,127 +282,44 @@ export default function Main() {
                   <Button
                     color="inherit"
                     variant="contained"
-                    onClick={handleVariable}
+                    onClick={() => setOpen2(true)}
                   >
                     ADD VARIABLE
                   </Button>
                 </Box>
                 <Box>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "1rem",
-                      marginBottom: "15px",
-                    }}
-                  >
-                    <TextField
-                      id="outlined-read-only-input"
-                      defaultValue="Variable 1 key"
-                      InputProps={{
-                        readOnly: true,
+                  {Object.keys(fetchVariableValues1).map((item, i) => (
+                    <div
+                      key={i}
+                      style={{
+                        display: "flex",
+                        gap: "1rem",
+                        marginBottom: "15px",
                       }}
-                      sx={{ background: "white" }}
-                    />
-                    <TextField
-                      value={variableValues.VariableKey1}
-                      onChange={handleAccount}
-                      name="VariableKey1"
-                      sx={{ background: "white" }}
-                      disabled={isDisabled}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "1rem",
-                      marginBottom: "15px",
-                    }}
-                  >
-                    <TextField
-                      id="outlined-read-only-input"
-                      defaultValue="Variable 2 key"
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                      sx={{ background: "white" }}
-                    />
-                    <TextField
-                      value={variableValues.VariableKey2}
-                      onChange={handleAccount}
-                      name="VariableKey2"
-                      sx={{ background: "white" }}
-                      disabled={isDisabled}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "1rem",
-                      marginBottom: "15px",
-                    }}
-                  >
-                    <TextField
-                      id="outlined-read-only-input"
-                      defaultValue="Variable 3 key"
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                      sx={{ background: "white" }}
-                    />
-                    <TextField
-                      value={variableValues.VariableKey3}
-                      onChange={handleAccount}
-                      name="VariableKey3"
-                      sx={{ background: "white" }}
-                      disabled={isDisabled}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "1rem",
-                      marginBottom: "15px",
-                    }}
-                  >
-                    <TextField
-                      id="outlined-read-only-input"
-                      defaultValue="Variable 4 key"
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                      sx={{ background: "white" }}
-                    />
-                    <TextField
-                      value={variableValues.VariableKey4}
-                      onChange={handleAccount}
-                      name="VariableKey4"
-                      sx={{ background: "white" }}
-                      disabled={isDisabled}
-                    />
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "1rem",
-                      marginBottom: "15px",
-                    }}
-                  >
-                    <TextField
-                      id="outlined-read-only-input"
-                      defaultValue="Variable 5 key"
-                      InputProps={{
-                        readOnly: true,
-                      }}
-                      sx={{ background: "white" }}
-                    />
-                    <TextField
-                      value={variableValues.VariableKey5}
-                      onChange={handleAccount}
-                      name="VariableKey5"
-                      sx={{ background: "white" }}
-                      disabled={isDisabled}
-                    />
-                  </div>
+                    >
+                      <TextField
+                        id="outlined-read-only-input"
+                        label="variable Key"
+                        value={item}
+                        onChange={handleVariableKey}
+                        sx={{ background: "white" }}
+                      />
+                      <TextField
+                        value={fetchVariableValues1[item]}
+                        label="variable value"
+                        onChange={handleVariableValue}
+                        sx={{ background: "white" }}
+                      />
+                    </div>
+                  ))}
+
+                  <AddNewVariable
+                    open={open2}
+                    // item={item}
+                    handleVariableKey={handleVariableKey}
+                    handleVariableValue={handleVariableValue}
+                    handleAddNewVariable={handleAddNewVariable}
+                  />
                 </Box>
               </Paper>
               {/* Contact Person */}
@@ -409,11 +352,10 @@ export default function Main() {
                     <ContactMailIcon />
                     <Typography variant="h6">CONTACT PERSON</Typography>
                   </Box>
-
                   <Button
                     color="inherit"
                     variant="contained"
-                    onClick={handleClickOpen}
+                    onClick={() => (setOpen1(true), setContacts([{}]))}
                   >
                     <PersonAddAlt1Icon />
                     <span style={{ marginLeft: "6px" }}> ADD NEW</span>
@@ -428,7 +370,10 @@ export default function Main() {
                             <TableCell></TableCell>
                             <TableCell align="right" sx={{ padding: "10px" }}>
                               {" "}
-                              <BorderColorIcon />
+                              <BorderColorIcon
+                                onClick={handleClickOpen}
+                                sx={{ cursor: "pointer" }}
+                              />
                             </TableCell>
 
                             {/* <TableCell align="right"></TableCell> */}
@@ -476,6 +421,13 @@ export default function Main() {
                         </TableBody>
                       </Table>
                     </TableContainer>
+                    <AddNewContact
+                      open1={open1}
+                      handleContacts={handleContacts}
+                      index={index}
+                      handleContactCreate={handleContactCreate}
+                      handleCreateCancel={handleCreateCancel}
+                    />
                     <Dialog open={open} onClose={handleClose}>
                       <DialogTitle>Contact Person</DialogTitle>
                       <DialogContent>
